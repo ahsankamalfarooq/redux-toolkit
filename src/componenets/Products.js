@@ -24,7 +24,8 @@ const Products = () => {
             <div className='card' key={product.id}>
                 <img src={product.image} alt='' />
                 <h4>{product.title}</h4>
-                <h3>${product.price}</h3>
+                <h5>${product.price}</h5>
+                <button className='btn'>Add to cart</button>
             </div>
         ))}
     </div>
