@@ -1,32 +1,56 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 
-const STATUSES = {
-    IDLE : 'idle',
-    ERROR : 'error',
-    LOADING : 'loading'
-}
+export const STATUSES = Object.freeze(
+    {
+        IDLE : 'idle',
+        ERROR : 'error',
+        LOADING : 'loading'
+    }
+)
 
 
 const initialState = {
     data : [],
-    status : 'idle'
+    status : STATUSES.IDLE,
 };
 
 const productSlice = createSlice({
     name : 'product',
     initialState,
     reducers : {
-        add(state, action) {
-            state.push(action.payload)
+        setProducts(state, action) {
+            //do not do the async req from reducer as 
+            // reducer are a sync and pure function mean 
+            // they donot have any sideEffects bcz api call is 
+            // itself a side effect 
+            state.data = action.payload
+        },
+        setStatus(state, action) {
+            state.status = action.payload;
         },
 
-        remove(state, action) {
-        return state.filter((item) => item.id !== action.payload)
-        },
     },
 });
 
 
-export const {add, remove} = productSlice.actions;
+export const {setProducts ,setStatus} = productSlice.actions;
 export default productSlice.reducer;
+
+
+// Thunk
+
+export function fetchProducts() {
+    return async function fetchProductThunk(dispatch, getState) {
+            dispatch(setStatus(STATUSES.LOADING))
+            try {
+                const res = await fetch('https://fakestoreapi.com/products')
+                const data = await res.json()
+                dispatch(setProducts(data))
+                dispatch(setStatus(STATUSES.IDLE))
+            } catch (err) {
+                dispatch(setStatus(STATUSES.ERROR))
+
+        }
+    }
+}
