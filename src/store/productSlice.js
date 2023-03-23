@@ -45,7 +45,7 @@ export function fetchProducts() {
             dispatch(setStatus(STATUSES.LOADING))
             try {
                 const res = await fetch('https://fakestoreapi.com/products')
-                const data = await res.json()
+                const data = await res.json() 
                 dispatch(setProducts(data))
                 dispatch(setStatus(STATUSES.IDLE))
             } catch (err) {
